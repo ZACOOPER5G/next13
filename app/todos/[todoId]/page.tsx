@@ -1,5 +1,6 @@
 import React from "react";
 import { Todo } from "../../../typings";
+import { notFound } from "next/navigation";
 
 type PageProps = {
 	params: {
@@ -18,6 +19,7 @@ const fetchTodo = async (todoId: string) => {
 
 const TodoPage = async ({ params: { todoId } }: PageProps) => {
 	const todo = await fetchTodo(todoId);
+    if (!todo.id) return notFound();
 
 	return (
 		<div className="p-10 bg-yellow-200 border-2 m-2 shadow-lg">
@@ -41,9 +43,9 @@ export async function generateStaticParams() {
     const trimmedTodos = todos.splice(0, 10);
 
     // for demo purposes, to prevent too many API calls from being made above the limit
-	return trimmedTodos.map((todo) => [
+	return trimmedTodos.map((todo) => (
 		{
 			todoId: todo.id.toString(),
-		},
-	]);
+		}
+    ));
 }
